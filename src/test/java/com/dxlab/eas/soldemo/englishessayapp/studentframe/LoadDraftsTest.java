@@ -15,6 +15,9 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests for the {@link StudentFrame#loadDrafts()} method.
+ */
 public class LoadDraftsTest {
 
     @TempDir
@@ -22,11 +25,20 @@ public class LoadDraftsTest {
 
     private StudentFrame studentFrame;
 
+    /**
+     * Sets up the test environment before each test.
+     */
     @BeforeEach
     public void setUp() {
         studentFrame = new StudentFrame("testStudent");
     }
 
+    /**
+     * Tests that drafts are loaded successfully when the drafts file exists and
+     * contains drafts for the student.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     @Test
     public void shouldLoadDraftsSuccessfullyWhenFileExists() throws IOException {
         // Arrange
@@ -47,6 +59,12 @@ public class LoadDraftsTest {
         assertEquals("draft1", model.getValueAt(0, 0));
     }
 
+    /**
+     * Tests that no drafts are loaded when the drafts file exists but contains no
+     * drafts for the student.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     @Test
     public void shouldNotLoadDraftsWhenNoDraftsForStudent() throws IOException {
         // Arrange
@@ -64,6 +82,11 @@ public class LoadDraftsTest {
         assertEquals(0, model.getRowCount());
     }
 
+    /**
+     * Tests that no drafts are loaded when the drafts file is empty.
+     *
+     * @throws IOException if an I/O error occurs
+     */
     @Test
     public void shouldNotLoadDraftsWhenFileIsEmpty() throws IOException {
         // Arrange
@@ -79,6 +102,9 @@ public class LoadDraftsTest {
         assertEquals(0, model.getRowCount());
     }
 
+    /**
+     * Tests that no drafts are loaded when the drafts file does not exist.
+     */
     @Test
     public void shouldNotLoadDraftsWhenFileDoesNotExist() {
         // Arrange

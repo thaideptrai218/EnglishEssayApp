@@ -156,27 +156,25 @@ public class StudentFrame extends JFrame {
         }
     }
 
-    public String selectTopic() {
+    public void selectTopic() {
         int row = topicTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a topic!");
-            return null;
+            return;
         }
         selectedTopicId = (String) topicTableModel.getValueAt(row, 0);
         JOptionPane.showMessageDialog(this, "Selected topic: " + topicTableModel.getValueAt(row, 1));
-        return selectedTopicId;
     }
 
-    public String viewTopic() {
+    public void viewTopic() {
         int row = topicTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a topic!");
-            return null;
+            return;
         }
         String topicId = (String) topicTableModel.getValueAt(row, 0);
         String description = (String) topicTableModel.getValueAt(row, 1);
         JOptionPane.showMessageDialog(this, description, "Topic: " + topicId, JOptionPane.PLAIN_MESSAGE);
-        return description;
     }
 
     private void saveDraft() {
