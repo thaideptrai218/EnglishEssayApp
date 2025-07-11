@@ -10,11 +10,11 @@ import java.util.List;
 
 public class TeacherFrame extends JFrame {
     private String teacherId;
-    private DefaultTableModel essayTableModel;
-    private DefaultTableModel gradedTableModel;
-    private DefaultTableModel historyTableModel;
-    private JTextField studentFilterField;
-    private JTextField topicFilterField;
+    public DefaultTableModel essayTableModel;
+    public DefaultTableModel gradedTableModel;
+    public DefaultTableModel historyTableModel;
+    public JTextField studentFilterField;
+    public JTextField topicFilterField;
 
     public TeacherFrame(String teacherId) {
         this.teacherId = teacherId;
@@ -121,7 +121,7 @@ public class TeacherFrame extends JFrame {
         add(tabbedPane, BorderLayout.CENTER);
     }
 
-    private void loadEssays() {
+    public void loadEssays() {
         essayTableModel.setRowCount(0);
         String studentFilter = studentFilterField.getText().trim();
         String topicFilter = topicFilterField.getText().trim();
@@ -140,7 +140,7 @@ public class TeacherFrame extends JFrame {
         }
     }
 
-    private void loadGradedEssays() {
+    public void loadGradedEssays() {
         gradedTableModel.setRowCount(0);
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.GRADED_FILE))) {
             String line;
@@ -156,7 +156,7 @@ public class TeacherFrame extends JFrame {
         }
     }
 
-    private void loadGradingHistory() {
+    public void loadGradingHistory() {
         historyTableModel.setRowCount(0);
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.GRADING_HISTORY_FILE))) {
             String line;
@@ -171,7 +171,7 @@ public class TeacherFrame extends JFrame {
         }
     }
 
-    private String getTopicContent(String topicId) {
+    public String getTopicContent(String topicId) {
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.TOPICS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {

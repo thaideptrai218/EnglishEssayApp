@@ -11,11 +11,11 @@ import java.util.List;
 public class StudentFrame extends JFrame {
     private String studentId;
     private JTextArea essayArea;
-    private DefaultTableModel topicTableModel;
-    private DefaultTableModel draftTableModel;
-    private DefaultTableModel submittedTableModel;
-    private String selectedTopicId;
-    private JTable topicTable;
+    public DefaultTableModel topicTableModel;
+    public DefaultTableModel draftTableModel;
+    public DefaultTableModel submittedTableModel;
+    public String selectedTopicId;
+    public JTable topicTable;
 
     public StudentFrame(String studentId) {
         this.studentId = studentId;
@@ -156,25 +156,27 @@ public class StudentFrame extends JFrame {
         }
     }
 
-    private void selectTopic() {
+    public String selectTopic() {
         int row = topicTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a topic!");
-            return;
+            return null;
         }
         selectedTopicId = (String) topicTableModel.getValueAt(row, 0);
         JOptionPane.showMessageDialog(this, "Selected topic: " + topicTableModel.getValueAt(row, 1));
+        return selectedTopicId;
     }
 
-    private void viewTopic() {
+    public String viewTopic() {
         int row = topicTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a topic!");
-            return;
+            return null;
         }
         String topicId = (String) topicTableModel.getValueAt(row, 0);
         String description = (String) topicTableModel.getValueAt(row, 1);
         JOptionPane.showMessageDialog(this, description, "Topic: " + topicId, JOptionPane.PLAIN_MESSAGE);
+        return description;
     }
 
     private void saveDraft() {
@@ -224,7 +226,7 @@ public class StudentFrame extends JFrame {
         }
     }
 
-    private void loadDrafts() {
+    public void loadDrafts() {
         draftTableModel.setRowCount(0);
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.DRAFTS_FILE))) {
             String line;
@@ -240,7 +242,7 @@ public class StudentFrame extends JFrame {
         }
     }
 
-    private void loadSubmitted() {
+    public void loadSubmitted() {
         submittedTableModel.setRowCount(0);
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.SUBMITTED_FILE))) {
             String line;
@@ -255,7 +257,7 @@ public class StudentFrame extends JFrame {
         }
     }
 
-    private String getGradeSummary(String essayId) {
+    public String getGradeSummary(String essayId) {
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.GRADED_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -395,7 +397,7 @@ public class StudentFrame extends JFrame {
         }
     }
 
-    private String getTopicContent(String topicId) {
+    public String getTopicContent(String topicId) {
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.TOPICS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
