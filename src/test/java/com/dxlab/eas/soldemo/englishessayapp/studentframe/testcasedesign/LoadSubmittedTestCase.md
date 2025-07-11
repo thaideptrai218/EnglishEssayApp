@@ -1,39 +1,9 @@
-**ID:** TC_LS_01
-**Test condition:** File `submitted.txt` exists and contains valid data for the student.
-**Steps:**
-1. Create a temporary `submitted.txt` file with valid submitted entries for the student.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadSubmitted` method.
-4. Access the `submittedTableModel`.
-**Expected Result:** The `submittedTableModel` is populated with the student's submitted essays.
-**Type:** N
+# Unit Test Case: StudentFrame - loadSubmitted()
 
-**ID:** TC_LS_02
-**Test condition:** File `submitted.txt` exists but contains no data for the student.
-**Steps:**
-1. Create a temporary `submitted.txt` file with submitted entries for other students.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadSubmitted` method.
-4. Access the `submittedTableModel`.
-**Expected Result:** The `submittedTableModel` remains empty.
-**Type:** N
-
-**ID:** TC_LS_03
-**Test condition:** File `submitted.txt` is empty.
-**Steps:**
-1. Create an empty temporary `submitted.txt` file.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadSubmitted` method.
-4. Access the `submittedTableModel`.
-**Expected Result:** The `submittedTableModel` remains empty.
-**Type:** A
-
-**ID:** TC_LS_04
-**Test condition:** File `submitted.txt` does not exist.
-**Steps:**
-1. Ensure no `submitted.txt` file exists in the test directory.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadSubmitted` method.
-4. Access the `submittedTableModel`.
-**Expected Result:** The `submittedTableModel` remains empty.
-**Type:** B
+| UTCID | Condition | Precondition | Confirm/Return | Exception | Log Message | Result | Type |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **TC_LS_01** | **Normal Path - Graded and Ungraded Essays** | `submitted.txt` contains entries for the current student and others. `graded.txt` contains a grade for one of the student's essays. | The `submittedTableModel` should contain 2 rows. Row 1 shows a full grade summary. Row 2 shows "Not graded". | None | N/A | The table model is populated correctly with the student's essays, showing the correct grade status for each. | N |
+| **TC_LS_02** | **Normal Path - No Essays for Student** | `submitted.txt` contains entries, but none for the current student. | The `submittedTableModel` should be empty. | None | N/A | The table model correctly shows no essays. | N |
+| **TC_LS_03** | **Boundary - Empty File** | `submitted.txt` exists but is empty. | The `submittedTableModel` should be empty. | None | N/A | The application handles an empty file without errors. | A |
+| **TC_LS_04** | **Boundary - Non-Existent File** | `submitted.txt` does not exist. | The `submittedTableModel` should be empty. | None | N/A | The application handles a missing file without crashing. | B |
+| **TC_LS_05** | **Abnormal - Malformed Data** | `submitted.txt` contains a mix of valid lines and one malformed line (e.g., missing separators). | The `submittedTableModel` should contain only the 2 valid essays. | None | N/A | The application ignores the corrupted line and does not crash. | A |
