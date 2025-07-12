@@ -16,9 +16,15 @@ public class StudentFrame extends JFrame {
     public DefaultTableModel submittedTableModel;
     public String selectedTopicId;
     public JTable topicTable;
+    private final DialogManager dialogManager;
 
     public StudentFrame(String studentId) {
-        this.studentId = studentId;
+        this(studentId, new DefaultDialogManager());
+    }
+
+    public StudentFrame(String studentid, DialogManager dm) {
+        this.studentId = studentid;
+        this.dialogManager = dm;
         setTitle("Student Panel - ID: " + studentId);
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,7 +157,8 @@ public class StudentFrame extends JFrame {
                 topicTableModel
                         .addRow(new Object[] { "T3", "Should governments invest more in public transportation..." });
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error initializing topics: " + e.getMessage());
+                dialogManager.showMessage("Error initializing topics: " + e.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -159,27 +166,28 @@ public class StudentFrame extends JFrame {
     public void selectTopic() {
         int row = topicTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a topic!");
+            dialogManager.showMessage("Please select a topic!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         selectedTopicId = (String) topicTableModel.getValueAt(row, 0);
-        JOptionPane.showMessageDialog(this, "Selected topic: " + topicTableModel.getValueAt(row, 1));
+        dialogManager.showMessage("Selected topic: " + topicTableModel.getValueAt(row, 1), "Topic Selected",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void viewTopic() {
         int row = topicTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a topic!");
+            dialogManager.showMessage("Please select a topic!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String topicId = (String) topicTableModel.getValueAt(row, 0);
         String description = (String) topicTableModel.getValueAt(row, 1);
-        JOptionPane.showMessageDialog(this, description, "Topic: " + topicId, JOptionPane.PLAIN_MESSAGE);
+        dialogManager.showMessage(description, "Topic: " + topicId, JOptionPane.PLAIN_MESSAGE);
     }
 
     private void saveDraft() {
         if (selectedTopicId == null) {
-            JOptionPane.showMessageDialog(this, "Please select a topic first!");
+            dialogManager.showMessage("Please select a topic first!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String content = essayArea.getText().trim();
@@ -190,20 +198,20 @@ public class StudentFrame extends JFrame {
                 writer.newLine();
                 draftTableModel.addRow(new Object[] { draftId, selectedTopicId,
                         content.length() > 50 ? content.substring(0, 50) + "..." : content });
-                JOptionPane.showMessageDialog(this, "Draft saved successfully!");
+                dialogManager.showMessage("Draft saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 essayArea.setText("");
                 selectedTopicId = null;
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error saving draft: " + ex.getMessage());
+                dialogManager.showMessage("Error saving draft: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Please write something before saving!");
+            dialogManager.showMessage("Please write something before saving!", "Warning", JOptionPane.WARNING_MESSAGE);
         }
     }
 
     private void submitEssay() {
         if (selectedTopicId == null) {
-            JOptionPane.showMessageDialog(this, "Please select a topic first!");
+            dialogManager.showMessage("Please select a topic first!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String content = essayArea.getText().trim();
@@ -213,14 +221,16 @@ public class StudentFrame extends JFrame {
                 writer.write(studentId + " | " + essayId + " | " + selectedTopicId + " | " + content);
                 writer.newLine();
                 submittedTableModel.addRow(new Object[] { essayId, selectedTopicId, "Not graded" });
-                JOptionPane.showMessageDialog(this, "Essay submitted successfully!");
+                dialogManager.showMessage("Essay submitted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 essayArea.setText("");
                 selectedTopicId = null;
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error submitting essay: " + ex.getMessage());
+                dialogManager.showMessage("Error submitting essay: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Please write something before submitting!");
+            dialogManager.showMessage("Please write something before submitting!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -274,31 +284,30 @@ public class StudentFrame extends JFrame {
     private void viewDraft(JTable draftTable) {
         int row = draftTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a draft!");
+            dialogManager.showMessage("Please select a draft!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String draftId = (String) draftTableModel.getValueAt(row, 0);
-        String topicId = (String) draftTableModel.getValueAt(row, 1);
         try (BufferedReader reader = new BufferedReader(new FileReader(EnglishEssayApp.DRAFTS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" \\| ", 4);
                 if (parts.length >= 4 && parts[1].equals(draftId)) {
-                    JOptionPane.showMessageDialog(this,
+                    dialogManager.showMessage(
                             "Topic: " + getTopicContent(parts[2]) + "\n\nContent:\n" + parts[3],
                             "Draft: " + draftId, JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error loading draft: " + ex.getMessage());
+            dialogManager.showMessage("Error loading draft: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void editDraft(JTable draftTable) {
         int row = draftTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a draft!");
+            dialogManager.showMessage("Please select a draft!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String draftId = (String) draftTableModel.getValueAt(row, 0);
@@ -309,25 +318,26 @@ public class StudentFrame extends JFrame {
                 if (parts.length >= 4 && parts[1].equals(draftId)) {
                     selectedTopicId = parts[2];
                     essayArea.setText(parts[3]);
-                    JOptionPane.showMessageDialog(this,
-                            "Draft loaded into editor. Topic: " + getTopicContent(parts[2]));
+                    dialogManager.showMessage(
+                            "Draft loaded into editor. Topic: " + getTopicContent(parts[2]), "Draft Loaded",
+                            JOptionPane.INFORMATION_MESSAGE);
                     updateDraft(draftId);
                     return;
                 }
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error loading draft: " + ex.getMessage());
+            dialogManager.showMessage("Error loading draft: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void deleteDraft(JTable draftTable) {
         int row = draftTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a draft!");
+            dialogManager.showMessage("Please select a draft!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String draftId = (String) draftTableModel.getValueAt(row, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "Delete this draft?", "Confirm Delete",
+        int confirm = dialogManager.showConfirmDialog("Delete this draft?", "Confirm Delete",
                 JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             List<String> lines = new ArrayList<>();
@@ -340,7 +350,8 @@ public class StudentFrame extends JFrame {
                     }
                 }
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error reading drafts: " + ex.getMessage());
+                dialogManager.showMessage("Error reading drafts: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(EnglishEssayApp.DRAFTS_FILE))) {
@@ -349,20 +360,21 @@ public class StudentFrame extends JFrame {
                     writer.newLine();
                 }
                 draftTableModel.removeRow(row);
-                JOptionPane.showMessageDialog(this, "Draft deleted successfully!");
+                dialogManager.showMessage("Draft deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error deleting draft: " + ex.getMessage());
+                dialogManager.showMessage("Error deleting draft: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
     private void updateDraft(String draftId) {
-        int result = JOptionPane.showConfirmDialog(this, "Save changes to this draft?", "Edit Draft",
+        int result = dialogManager.showConfirmDialog("Save changes to this draft?", "Edit Draft",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             String newContent = essayArea.getText().trim();
             if (newContent.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Draft content cannot be empty!");
+                dialogManager.showMessage("Draft content cannot be empty!", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             List<String> lines = new ArrayList<>();
@@ -377,7 +389,8 @@ public class StudentFrame extends JFrame {
                     }
                 }
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error reading drafts: " + ex.getMessage());
+                dialogManager.showMessage("Error reading drafts: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(EnglishEssayApp.DRAFTS_FILE))) {
@@ -385,12 +398,13 @@ public class StudentFrame extends JFrame {
                     writer.write(line);
                     writer.newLine();
                 }
-                JOptionPane.showMessageDialog(this, "Draft updated successfully!");
+                dialogManager.showMessage("Draft updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 essayArea.setText("");
                 selectedTopicId = null;
                 loadDrafts();
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error updating draft: " + ex.getMessage());
+                dialogManager.showMessage("Error updating draft: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -413,7 +427,7 @@ public class StudentFrame extends JFrame {
     private void viewResult(JTable submittedTable) {
         int row = submittedTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select an essay!");
+            dialogManager.showMessage("Please select an essay!", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         String essayId = (String) submittedTableModel.getValueAt(row, 0);
@@ -429,7 +443,7 @@ public class StudentFrame extends JFrame {
                 }
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error loading essay: " + ex.getMessage());
+            dialogManager.showMessage("Error loading essay: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         JTextArea contentArea = new JTextArea("Topic: " + getTopicContent(topicId) + "\n\nContent:\n" + content);
@@ -443,15 +457,15 @@ public class StudentFrame extends JFrame {
                     contentArea.append(String.format("\n\nResult:\nTask Achievement: %s\nCoherence and Cohesion: %s\n" +
                             "Lexical Resource: %s\nGrammatical Range and Accuracy: %s\nComments: %s",
                             parts[3], parts[4], parts[5], parts[6], parts[7]));
-                    JOptionPane.showMessageDialog(this, scrollPane, "Essay and Result: " + essayId,
+                    dialogManager.showMessage(scrollPane.toString(), "Essay and Result: " + essayId,
                             JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
             }
-            JOptionPane.showMessageDialog(this, scrollPane, "Essay: " + essayId + " (Not graded)",
+            dialogManager.showMessage(scrollPane.toString(), "Essay: " + essayId + " (Not graded)",
                     JOptionPane.PLAIN_MESSAGE);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error loading result: " + ex.getMessage());
+            dialogManager.showMessage("Error loading result: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

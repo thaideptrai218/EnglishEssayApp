@@ -1,5 +1,6 @@
 package com.dxlab.eas.soldemo.englishessayapp.studentframe;
 
+import com.dxlab.eas.soldemo.englishessayapp.DialogManager;
 import com.dxlab.eas.soldemo.englishessayapp.EnglishEssayApp;
 import com.dxlab.eas.soldemo.englishessayapp.StudentFrame;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +25,15 @@ public class LoadTopicsTest {
 
     private StudentFrame studentFrame;
 
+    private static class MockDialogManager implements DialogManager {
+        @Override
+        public void showMessage(String message, String title, int messageType) {}
+        @Override
+        public int showConfirmDialog(String message, String title, int optionType) {
+            return JOptionPane.NO_OPTION;
+        }
+    }
+
     @BeforeEach
     public void setUp() throws IOException {
         // Prepare the environment before constructing the StudentFrame
@@ -37,7 +48,6 @@ public class LoadTopicsTest {
         EnglishEssayApp.setGradedFile(gradedFile.getAbsolutePath());
 
         // Create empty files to prevent constructor errors
-        // The loadTopics method is called in the constructor, so we prepare the file here.
         topicsFile.createNewFile();
         draftsFile.createNewFile();
         submittedFile.createNewFile();
@@ -56,8 +66,7 @@ public class LoadTopicsTest {
         }
         
         // Act
-        // The loadTopics method is called in the constructor, which we create now.
-        studentFrame = new StudentFrame("testStudent");
+        studentFrame = new StudentFrame("testStudent", new MockDialogManager());
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;
@@ -71,7 +80,7 @@ public class LoadTopicsTest {
     public void shouldNotLoadTopicsWhenFileIsEmpty() {
         // Arrange: The topics file is already created empty in setUp.
         // Act
-        studentFrame = new StudentFrame("testStudent");
+        studentFrame = new StudentFrame("testStudent", new MockDialogManager());
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;
@@ -86,7 +95,7 @@ public class LoadTopicsTest {
         topicsFile.delete();
 
         // Act
-        studentFrame = new StudentFrame("testStudent");
+        studentFrame = new StudentFrame("testStudent", new MockDialogManager());
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;
@@ -108,7 +117,7 @@ public class LoadTopicsTest {
         }
 
         // Act
-        studentFrame = new StudentFrame("testStudent");
+        studentFrame = new StudentFrame("testStudent", new MockDialogManager());
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;

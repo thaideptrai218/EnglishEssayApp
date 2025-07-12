@@ -1,5 +1,6 @@
 package com.dxlab.eas.soldemo.englishessayapp.studentframe;
 
+import com.dxlab.eas.soldemo.englishessayapp.DialogManager;
 import com.dxlab.eas.soldemo.englishessayapp.EnglishEssayApp;
 import com.dxlab.eas.soldemo.englishessayapp.StudentFrame;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +25,15 @@ public class LoadDraftsTest {
 
     private StudentFrame studentFrame;
     private final String currentStudentId = "testStudent";
+
+    private static class MockDialogManager implements DialogManager {
+        @Override
+        public void showMessage(String message, String title, int messageType) {}
+        @Override
+        public int showConfirmDialog(String message, String title, int optionType) {
+            return JOptionPane.NO_OPTION;
+        }
+    }
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -43,7 +54,7 @@ public class LoadDraftsTest {
         submittedFile.createNewFile();
         gradedFile.createNewFile();
 
-        studentFrame = new StudentFrame(currentStudentId);
+        studentFrame = new StudentFrame(currentStudentId, new MockDialogManager());
     }
 
     @Test
