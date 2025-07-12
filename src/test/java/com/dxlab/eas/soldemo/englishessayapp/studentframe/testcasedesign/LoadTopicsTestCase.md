@@ -1,29 +1,8 @@
-**ID:** TC_LT_01
-**Test condition:** File `topics.txt` exists and contains valid data.
-**Steps:**
-1. Create a temporary `topics.txt` file with valid topic entries.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadTopics` method.
-4. Access the `topicTableModel`.
-**Expected Result:** The `topicTableModel` is populated with the data from the `topics.txt` file.
-**Type:** N
+# Unit Test Case: StudentFrame - loadTopics()
 
-**ID:** TC_LT_02
-**Test condition:** File `topics.txt` is empty.
-**Steps:**
-1. Create an empty temporary `topics.txt` file.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadTopics` method.
-4. Access the `topicTableModel`.
-**Expected Result:** The `topicTableModel` remains empty.
-**Type:** A
-
-**ID:** TC_LT_03
-**Test condition:** File `topics.txt` does not exist.
-**Steps:**
-1. Ensure no `topics.txt` file exists in the test directory.
-2. Instantiate `StudentFrame`.
-3. Invoke the `loadTopics` method.
-4. Access the `topicTableModel`.
-**Expected Result:** The `topicTableModel` is populated with the default set of topics.
-**Type:** B
+| UTCID | Condition | Precondition | Confirm/Return | Exception | Log Message | Result | Type |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **TC_LT_01** | **Normal Path - File Exists** | `topics.txt` exists and contains valid topic entries. | The `topicTableModel` should be populated with the data from the file. | None | N/A | Topics are loaded correctly from the file. | N |
+| **TC_LT_02** | **Boundary - Empty File** | `topics.txt` exists but is empty. | The `topicTableModel` should be empty. | None | N/A | The application handles an empty file without errors. | A |
+| **TC_LT_03** | **Boundary - Non-Existent File** | `topics.txt` does not exist. | The `topicTableModel` should be populated with the 3 default topics. | None | N/A | The application correctly falls back to loading default topics. | B |
+| **TC_LT_04** | **Abnormal - Malformed Data** | `topics.txt` contains a mix of valid and malformed lines. | The `topicTableModel` should contain only the valid topics. | None | N/A | The application ignores corrupted lines and does not crash. | A |

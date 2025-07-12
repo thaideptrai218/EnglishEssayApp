@@ -3,6 +3,7 @@ package com.dxlab.eas.soldemo.englishessayapp.studentframe;
 import com.dxlab.eas.soldemo.englishessayapp.EnglishEssayApp;
 import com.dxlab.eas.soldemo.englishessayapp.StudentFrame;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -11,14 +12,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Tests for the {@link StudentFrame#loadTopics()} method.
- */
 public class LoadTopicsTest {
 
     @TempDir
@@ -26,48 +23,41 @@ public class LoadTopicsTest {
 
     private StudentFrame studentFrame;
 
-    /**
-     * Sets up the test environment before each test.
-     */
     @BeforeEach
-    public void setUp() {
-        studentFrame = new StudentFrame("testStudent");
-    }
-
-    /**
-     * Invokes the private method {@link StudentFrame#loadTopics()} using reflection.
-     *
-     * @throws NoSuchMethodException if the method is not found
-     * @throws InvocationTargetException if the underlying method throws an exception
-     * @throws IllegalAccessException if this Method object is enforcing Java language access control and the underlying method is inaccessible
-     */
-    private void invokeLoadTopics() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        java.lang.reflect.Method method = StudentFrame.class.getDeclaredMethod("loadTopics");
-        method.setAccessible(true);
-        method.invoke(studentFrame);
-    }
-
-    /**
-     * Tests that topics are loaded successfully when the topics file exists and contains valid data.
-     *
-     * @throws IOException if an I/O error occurs
-     * @throws NoSuchMethodException if the method is not found
-     * @throws InvocationTargetException if the underlying method throws an exception
-     * @throws IllegalAccessException if this Method object is enforcing Java language access control and the underlying method is inaccessible
-     */
-    @Test
-    public void shouldLoadTopicsSuccessfullyWhenFileExists() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        // Arrange
+    public void setUp() throws IOException {
+        // Prepare the environment before constructing the StudentFrame
         File topicsFile = tempDir.resolve("topics.txt").toFile();
+        File draftsFile = tempDir.resolve("drafts.txt").toFile();
+        File submittedFile = tempDir.resolve("submitted.txt").toFile();
+        File gradedFile = tempDir.resolve("graded.txt").toFile();
+
+        EnglishEssayApp.setTopicsFile(topicsFile.getAbsolutePath());
+        EnglishEssayApp.setDraftsFile(draftsFile.getAbsolutePath());
+        EnglishEssayApp.setSubmittedFile(submittedFile.getAbsolutePath());
+        EnglishEssayApp.setGradedFile(gradedFile.getAbsolutePath());
+
+        // Create empty files to prevent constructor errors
+        // The loadTopics method is called in the constructor, so we prepare the file here.
+        topicsFile.createNewFile();
+        draftsFile.createNewFile();
+        submittedFile.createNewFile();
+        gradedFile.createNewFile();
+    }
+
+    @Test
+    @DisplayName("Should load topics successfully when file exists")
+    public void shouldLoadTopicsSuccessfullyWhenFileExists() throws IOException {
+        // Arrange
+        File topicsFile = new File(EnglishEssayApp.TOPICS_FILE);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(topicsFile))) {
             writer.write("T1 | Test Topic 1");
             writer.newLine();
             writer.write("T2 | Test Topic 2");
         }
-        EnglishEssayApp.setTopicsFile(topicsFile.getAbsolutePath());
-
+        
         // Act
-        invokeLoadTopics();
+        // The loadTopics method is called in the constructor, which we create now.
+        studentFrame = new StudentFrame("testStudent");
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;
@@ -76,48 +66,52 @@ public class LoadTopicsTest {
         assertEquals("Test Topic 1", model.getValueAt(0, 1));
     }
 
-    /**
-     * Tests that no topics are loaded when the topics file is empty.
-     *
-     * @throws IOException if an I/O error occurs
-     * @throws NoSuchMethodException if the method is not found
-     * @throws InvocationTargetException if the underlying method throws an exception
-     * @throws IllegalAccessException if this Method object is enforcing Java language access control and the underlying method is inaccessible
-     */
     @Test
-    public void shouldNotLoadTopicsWhenFileIsEmpty() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        // Arrange
-        File topicsFile = tempDir.resolve("topics.txt").toFile();
-        topicsFile.createNewFile();
-        EnglishEssayApp.setTopicsFile(topicsFile.getAbsolutePath());
-
+    @DisplayName("Should load no topics when file is empty")
+    public void shouldNotLoadTopicsWhenFileIsEmpty() {
+        // Arrange: The topics file is already created empty in setUp.
         // Act
-        invokeLoadTopics();
+        studentFrame = new StudentFrame("testStudent");
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;
         assertEquals(0, model.getRowCount());
     }
 
-    /**
-     * Tests that default topics are loaded when the topics file does not exist.
-     *
-     * @throws NoSuchMethodException if the method is not found
-     * @throws InvocationTargetException if the underlying method throws an exception
-     * @throws IllegalAccessException if this Method object is enforcing Java language access control and the underlying method is inaccessible
-     */
     @Test
-    public void shouldLoadDefaultTopicsWhenFileDoesNotExist() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    @DisplayName("Should load default topics when file does not exist")
+    public void shouldLoadDefaultTopicsWhenFileDoesNotExist() {
         // Arrange
-        File topicsFile = tempDir.resolve("non_existent_topics.txt").toFile();
-        EnglishEssayApp.setTopicsFile(topicsFile.getAbsolutePath());
+        File topicsFile = new File(EnglishEssayApp.TOPICS_FILE);
+        topicsFile.delete();
 
         // Act
-        invokeLoadTopics();
+        studentFrame = new StudentFrame("testStudent");
 
         // Assert
         DefaultTableModel model = studentFrame.topicTableModel;
         assertEquals(3, model.getRowCount());
         assertEquals("T1", model.getValueAt(0, 0));
+    }
+
+    @Test
+    @DisplayName("Should ignore malformed lines and load valid topics")
+    public void shouldIgnoreMalformedLinesWhenLoadingTopics() throws IOException {
+        // Arrange
+        File topicsFile = new File(EnglishEssayApp.TOPICS_FILE);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(topicsFile))) {
+            writer.write("T1 | Valid Topic 1");
+            writer.newLine();
+            writer.write("malformed-line");
+            writer.newLine();
+            writer.write("T2 | Valid Topic 2");
+        }
+
+        // Act
+        studentFrame = new StudentFrame("testStudent");
+
+        // Assert
+        DefaultTableModel model = studentFrame.topicTableModel;
+        assertEquals(2, model.getRowCount());
     }
 }
