@@ -13,8 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ViewTopicTest {
 
@@ -26,7 +25,8 @@ public class ViewTopicTest {
 
     /**
      * A mock implementation of the DialogManager for testing purposes.
-     * Instead of showing a real dialog, it captures the messages that would be shown.
+     * Instead of showing a real dialog, it captures the messages that would be
+     * shown.
      */
     private static class MockDialogManager implements DialogManager {
         private String lastMessage;
@@ -80,12 +80,13 @@ public class ViewTopicTest {
         // Arrange
         studentFrame.topicTableModel.addRow(new Object[] { "T1", "Test Topic 1" });
         studentFrame.topicTable.setRowSelectionInterval(0, 0);
-        
+
         // Act
         studentFrame.viewTopic();
-        
+
         // Assert
-        // Verify that the dialog manager was asked to show the correct topic description.
+        // Verify that the dialog manager was asked to show the correct topic
+        // description.
         assertEquals("Test Topic 1", mockDialogManager.getLastMessage());
     }
 
@@ -95,10 +96,10 @@ public class ViewTopicTest {
         // Arrange
         studentFrame.topicTableModel.addRow(new Object[] { "T1", "Test Topic 1" });
         // No row is selected
-        
+
         // Act
         studentFrame.viewTopic();
-        
+
         // Assert
         assertEquals("Please select a topic!", mockDialogManager.getLastMessage());
     }
@@ -109,7 +110,7 @@ public class ViewTopicTest {
         // Arrange: The table model is empty by default
         // Act
         studentFrame.viewTopic();
-        
+
         // Assert
         assertEquals("Please select a topic!", mockDialogManager.getLastMessage());
     }

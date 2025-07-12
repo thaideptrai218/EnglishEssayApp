@@ -127,4 +127,22 @@ public class GetGradeSummaryTest {
         // Assert
         assertEquals("Not graded", summary);
     }
+
+    @Test
+    @DisplayName("Should return correct grade summary when multiple entries exist and target is last")
+    public void shouldReturnGradeSummaryWhenMultipleEntriesAndTargetIsLast() throws IOException {
+        // Arrange
+        File gradedFile = new File(EnglishEssayApp.GRADED_FILE);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(gradedFile))) {
+            writer.write("student1 | essay1 | T1 | 5 | 5 | 5 | 5 | Average.\n");
+            writer.write("student2 | essay2 | T2 | 9 | 9 | 9 | 9 | Excellent!\n");
+            writer.write("student1 | essay3 | T3 | 8 | 7 | 8 | 7 | Good job.");
+        }
+
+        // Act
+        String summary = studentFrame.getGradeSummary("essay3");
+
+        // Assert
+        assertEquals("Task: 8, Coherence: 7, Lexical: 8, Grammar: 7", summary);
+    }
 }

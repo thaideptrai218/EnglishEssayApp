@@ -110,4 +110,20 @@ public class SelectTopicTest {
         assertNull(studentFrame.selectedTopicId, "selectedTopicId should be null when the table is empty.");
         assertEquals("Please select a topic!", mockDialogManager.getLastMessage());
     }
+
+    @Test
+    @DisplayName("Should update selectedTopicId when the last topic is selected")
+    public void testSelectTopic_LastTopicSelected() {
+        // Arrange
+        studentFrame.topicTableModel.addRow(new Object[] { "T1", "Test Topic 1" });
+        studentFrame.topicTableModel.addRow(new Object[] { "T2", "Test Topic 2" });
+        studentFrame.topicTable.setRowSelectionInterval(1, 1); // Select the last row
+        
+        // Act
+        studentFrame.selectTopic();
+        
+        // Assert
+        assertEquals("T2", studentFrame.selectedTopicId);
+        assertEquals("Selected topic: Test Topic 2", mockDialogManager.getLastMessage());
+    }
 }

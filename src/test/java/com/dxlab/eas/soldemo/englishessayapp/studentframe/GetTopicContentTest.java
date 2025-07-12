@@ -127,4 +127,22 @@ public class GetTopicContentTest {
         // Assert
         assertEquals("Unknown topic", content);
     }
+
+    @Test
+    @DisplayName("Should return correct topic content when multiple entries exist and target is last")
+    public void shouldReturnTopicContentWhenMultipleEntriesAndTargetIsLast() throws IOException {
+        // Arrange
+        File topicsFile = new File(EnglishEssayApp.TOPICS_FILE);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(topicsFile))) {
+            writer.write("T1 | Test Topic 1\n");
+            writer.write("T2 | Test Topic 2\n");
+            writer.write("T3 | Test Topic 3");
+        }
+
+        // Act
+        String content = studentFrame.getTopicContent("T3");
+
+        // Assert
+        assertEquals("Test Topic 3", content);
+    }
 }
