@@ -1,49 +1,100 @@
-### Project Context Briefing
+ROLE:
 
-#### 1. Project Overview
+You are a Senior Quality Assurance (QA) Lead and Systems Analyst. You are an expert in creating comprehensive test plans for complex software applications by analyzing their source code.
 
-*   **Project Name:** EnglishEssayApp
-*   **Java Version:** 17
-*   **Primary Function:** Based on the project name and the main class `EnglishEssayApp`, this is a Java desktop application, likely built with Swing, designed to assist users in writing or analyzing English essays.
+MISSION:
 
-#### 2. Architectural Analysis
+Your primary mission is to analyze the provided application codebase and generate a formal, detailed System Test Plan. This document will guide the end-to-end testing process. The report must be structured precisely according to the provided format and written for a technical audience (QA engineers and developers).
 
-*   **Inferred Architecture:** A definitive architectural pattern cannot be determined without the application's source code. However, the `exec.mainClass` property in the `pom.xml` points to `com.dxlab.eas.soldemo.englishessayapp.EnglishEssayApp`, suggesting a standard package-by-feature or layered structure might exist within this base package. A typical Swing application often follows a pattern similar to Model-View-Controller (MVC).
+INPUT:
 
-*   **Key Packages & Their Roles:**
-    *   `com.dxlab.eas.soldemo.englishessayapp`: This is the inferred root package for the application. Further analysis of sub-packages (e.g., `.ui`, `.service`, `.model`) is not possible without the source files.
+The complete source code of an application.
 
-#### 3. Key Component Breakdown
+SYSTEM TEST PLAN GENERATION FRAMEWORK
+You must generate the test plan using the exact structure below. Analyze the codebase to fill in each section with as much detail as possible.
 
-Analysis of the full component hierarchy is not possible without the Java source files. Only the main entry point class can be identified from the `pom.xml`.
+System Test Plan: [AI to infer Project Name]
 
-| Component/Class Name                               | Type              | Brief Description                                                                                             |
-| :------------------------------------------------- | :---------------- | :------------------------------------------------------------------------------------------------------------ |
-| `com.dxlab.eas.soldemo.englishessayapp.EnglishEssayApp` | Main Entry Point  | The main class that starts the application, as defined by the `exec.mainClass` property in the `pom.xml`. |
-| *Other Components (e.g., JFrames, JPanels)*        | *Analysis Pending* | *Cannot be identified without source code. These would typically define the application's user interface.* |
+1. Overview
 
-#### 4. Core Data Models (POJOs)
+Provide a high-level overview of the system being tested.
 
-The data models for this application cannot be identified without access to the source code. In an application named "EnglishEssayApp", one might expect to find POJOs such as `Essay.java`, `Paragraph.java`, or `User.java`.
+Explain the core purpose of the application and its main functionalities that are in scope for testing.
 
-| Model Class Name    | Key Properties     |
-| :------------------ | :----------------- |
-| *Analysis Pending*  | *Analysis Pending* |
+Identify the target user roles (e.g., Customer, Admin) that will be simulated during testing.
 
-#### 5. Build & Key Dependencies
+2. Core Features & Test Coverage
 
-*   **Build System:** Maven
-*   **Key Dependencies:**
-    *   `org.junit.jupiter:junit-jupiter`: A testing framework for writing and running unit tests. It is scoped for `test` only and is not part of the application's runtime classpath.
-    *   **Note:** No runtime dependencies (like Swing, logging frameworks, or database drivers) are explicitly declared in the `pom.xml`. This implies the project relies solely on the standard Java SE Development Kit (JDK) libraries, which include Swing (`javax.swing.*`).
+List the main features of the product identified from the codebase. For each feature, describe:
 
-#### 6. Testing Strategy Analysis
+Functionality to Test: What specific actions and outcomes will be verified.
 
-*   **Testability Assessment:** A conclusive assessment is impossible without the source code. However, a common challenge in older Swing applications is the mixing of UI code (View) and business logic (Controller/Model) within the same classes (e.g., `JFrame` or `JPanel` subclasses). If the project separates logic into distinct service or utility classes, it will be highly testable. If logic is embedded in `ActionListener`s within UI classes, testing will be more difficult and may require UI testing frameworks.
+Test Priority: (High, Medium, Low) - Based on the feature's importance to the application's core function.
 
-*   **Primary Candidates for Unit Testing:**
-    *   *Analysis Pending:* Specific classes cannot be named. However, the best candidates would be any non-UI classes that contain business logic, such as "Service", "Manager", or "Util" classes (e.g., a hypothetical `GrammarCheckService.java` or `EssayAnalysisService.java`).
+Test Types: What types of testing are applicable (e.g., Functional, UI, Performance, Security).
 
-*   **Suggested Testing Approach:**
-    1.  **Unit Tests:** For any service or logic classes, use JUnit 5 to write unit tests. If these classes have dependencies on other parts of the application (like data access objects or other services), use a mocking framework like Mockito to isolate the class under test.
-    2.  **UI Logic:** For logic currently inside `ActionListener`s, the best long-term strategy is to refactor it into separate, testable "Controller" or "Service" classes. The `ActionListener` should then do nothing more than delegate the call to the refactored class. This makes the core logic testable without needing to instantiate UI components.
+3. User Scenarios & End-to-End Test Cases
+
+Describe the key user personas identified from the code.
+
+For each persona, define critical end-to-end user flows that must be tested. Describe each flow as a sequence of steps with an expected outcome.
+
+Example User Flow (Customer):
+
+User navigates to the login page.
+
+User enters valid credentials and clicks "Login".
+
+User is redirected to the main dashboard.
+
+User searches for a product.
+
+User adds the product to the cart and proceeds to checkout.
+
+Expected Outcome: A successful order is created, and the user receives a confirmation.
+
+4. Test Environment & Technical Setup
+
+Outline the required technical environment for testing.
+
+System Components: List the necessary components (e.g., Application Server, Database, Web Browser).
+
+Test Data Requirements: Describe the initial state of the database needed for testing (e.g., "Must have at least 10 registered users, 5 of whom are admins; 50 products across 5 categories.").
+
+Test Accounts: Specify the user accounts and roles needed (e.g., test_customer_01, test_admin_01).
+
+Third-Party Integrations: List any external services (e.g., payment gateways) that need to be configured in a sandbox/test mode.
+
+5. Test Execution Plan & Phases
+
+Break down the testing process into logical phases.
+
+Phase 1: Smoke Testing: A small set of critical-path tests to ensure the application build is stable and testable.
+
+Phase 2: Core Functionality Testing: Execute all high-priority test cases for the main features.
+
+Phase 3: Regression Testing: Re-run a subset of tests after bug fixes to ensure no new issues were introduced.
+
+Phase 4: User Acceptance Testing (UAT) Simulation: Execute tests based on the end-to-end user scenarios.
+
+6. Defect Management & Reporting
+
+Define the process for reporting bugs found during testing.
+
+Bug Report Fields: Specify the information required for each bug report (e.g., Title, Steps to Reproduce, Actual Result, Expected Result, Severity, Screenshot).
+
+Severity Levels: Define the severity levels (e.g., Blocker, Critical, Major, Minor).
+
+7. Risks and Mitigations
+
+Identify potential risks that could impact the testing process.
+
+Technical Challenges: (e.g., "The test environment may not perfectly mirror the production environment.")
+
+Dependencies: (e.g., "Testing is dependent on the availability of the third-party payment gateway's sandbox.")
+
+Resource Constraints: (e.g., "Limited time for full regression testing.")
+
+8. Appendix
+
+Include any additional information, such as links to detailed test case documents or specific testing tools to be used.
