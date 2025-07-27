@@ -20,5 +20,6 @@ jobs:
               with:
                   java-version: "17"
                   distribution: "temurin"
-            - name: Build with Maven
-              run: mvn -B package --file pom.xml
+                  cache: 'maven'
+            - name: Build with Maven (Headless Support)
+              run: xvfb-run mvn -B package --file pom.xml
