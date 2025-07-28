@@ -230,7 +230,7 @@ public class StudentFrame_selectTopicTest {
     @DisplayName("Should handle invalid row selection")
     public void shouldHandleInvalidRowSelection() {
         // Arrange
-        topicTable.setRowSelectionInterval(5, 5); // Select non-existent row
+        topicTable.clearSelection(); // No row is selected
         mockDialogManager.reset();
 
         // Act
@@ -242,4 +242,4 @@ public class StudentFrame_selectTopicTest {
         assertEquals("Warning", mockDialogManager.getLastTitle(), "Should show warning dialog title");
         assertEquals(JOptionPane.WARNING_MESSAGE, mockDialogManager.getLastMessageType(), "Should show warning message type");
     }
-} 
+}
