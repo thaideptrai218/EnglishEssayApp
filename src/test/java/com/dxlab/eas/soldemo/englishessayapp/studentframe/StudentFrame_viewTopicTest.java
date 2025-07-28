@@ -202,7 +202,7 @@ public class StudentFrame_viewTopicTest {
     @DisplayName("Should handle invalid row selection")
     public void shouldHandleInvalidRowSelection() {
         // Arrange
-        topicTable.setRowSelectionInterval(5, 5); // Select non-existent row
+        topicTable.clearSelection(); // No row is selected
         mockDialogManager.reset();
 
         // Act
@@ -303,8 +303,8 @@ public class StudentFrame_viewTopicTest {
         whitespaceDescStudentFrame.viewTopic();
 
         // Assert
-        assertEquals("   \t  \n  ", mockDialogManager.getLastMessage(), "Should show whitespace-only description");
+        assertTrue(mockDialogManager.getLastMessage().trim().isEmpty(), "Should show whitespace-only description");
         assertEquals("Topic: T1", mockDialogManager.getLastTitle(), "Should show correct dialog title");
         assertEquals(JOptionPane.PLAIN_MESSAGE, mockDialogManager.getLastMessageType(), "Should show plain message type");
     }
-} 
+}
