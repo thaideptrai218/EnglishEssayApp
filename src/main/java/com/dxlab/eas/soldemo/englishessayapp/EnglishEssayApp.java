@@ -8,7 +8,7 @@ public class EnglishEssayApp {
     public static String SUBMITTED_FILE = "submitted.txt";
     public static String GRADED_FILE = "graded.txt";
     public static String GRADING_HISTORY_FILE = "grading_history.txt";
-    public static final String VIEW_LOG_FILE = "view_log.txt";
+    public static String VIEW_LOG_FILE = "view_log.txt";
 
     public static void setTopicsFile(String path) {
         TOPICS_FILE = path;
@@ -28,6 +28,10 @@ public class EnglishEssayApp {
 
     public static void setGradingHistoryFile(String path) {
         GRADING_HISTORY_FILE = path;
+    }
+
+    public static void setViewLogFile(String path) {
+        VIEW_LOG_FILE = path;
     }
 
     public static void main(String[] args) {
