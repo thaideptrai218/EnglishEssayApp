@@ -186,7 +186,7 @@ public class TeacherFrame extends JFrame {
         return "Unknown topic";
     }
 
-    private void viewEssay(boolean isGraded, JTable gradedTable, JTable essayTable) {
+    public void viewEssay(boolean isGraded, JTable gradedTable, JTable essayTable) {
         JTable table = isGraded ? gradedTable : essayTable;
         DefaultTableModel model = isGraded ? gradedTableModel : essayTableModel;
         int row = table.getSelectedRow();
@@ -262,7 +262,7 @@ public class TeacherFrame extends JFrame {
         }
     }
 
-    private void gradeEssay(JTable essayTable) {
+    public void gradeEssay(JTable essayTable) {
         int row = essayTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select an essay!");
@@ -383,7 +383,7 @@ public class TeacherFrame extends JFrame {
         }
     }
 
-    private void editGrade(JTable gradedTable) {
+    public void editGrade(JTable gradedTable) {
         int row = gradedTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a graded essay!");
@@ -517,7 +517,7 @@ public class TeacherFrame extends JFrame {
         }
     }
 
-    private void viewGradingHistory(JTable historyTable) {
+    public void viewGradingHistory(JTable historyTable) {
         int row = historyTable.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a grading record!");
